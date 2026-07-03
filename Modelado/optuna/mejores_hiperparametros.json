@@ -1,0 +1,58 @@
+{
+  "xgboost": {
+    "n_estimators": 604,
+    "max_depth": 3,
+    "learning_rate": 0.018169391195341247,
+    "min_child_weight": 5,
+    "subsample": 0.9155444860229962,
+    "colsample_bytree": 0.8256742685398336,
+    "reg_alpha": 0.002616105131918576,
+    "reg_lambda": 2.4854089905414054
+  },
+  "lightgbm": {
+    "n_estimators": 539,
+    "num_leaves": 119,
+    "max_depth": 3,
+    "learning_rate": 0.017987863473362915,
+    "min_child_samples": 7,
+    "subsample": 0.7301321323053057,
+    "colsample_bytree": 0.7554709158757927,
+    "reg_alpha": 0.007865589790890783,
+    "reg_lambda": 0.7614139119869378
+  },
+  "config": {
+    "min_burn_weeks": 52,
+    "test_weeks_por_fold": 4,
+    "n_folds_usados": 2,
+    "fillna_value": null,
+    "drop_trend_features": true,
+    "feature_cols": [
+      "semana_del_año_sin",
+      "semana_del_año_cos",
+      "mes_sin",
+      "mes_cos",
+      "semana_con_festivo",
+      "count_lag_1w",
+      "count_lag_2w",
+      "count_lag_4w",
+      "count_lag_8w",
+      "count_lag_52w",
+      "rolling_mean_4w",
+      "rolling_mean_8w",
+      "rolling_mean_12w",
+      "rolling_std_4w",
+      "rolling_std_8w",
+      "media_historica",
+      "distrito_id",
+      "iso_week",
+      "mes",
+      "turno_madrugada",
+      "turno_mañana",
+      "turno_noche",
+      "turno_tarde",
+      "subtipo_TOTAL"
+    ],
+    "rmse_cv_xgboost": 4.458211049611172,
+    "rmse_cv_lightgbm": 4.545274116149124
+  }
+}
