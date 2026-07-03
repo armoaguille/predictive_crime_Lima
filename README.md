@@ -14,7 +14,6 @@ Dos versiones implementadas:
 | Version | Granularidad | Celdas | Features |
 |---|---|---|---|
 | v1 (semanal) | `(distrito, turno, semana)` | 12,728 | 33 |
-| v2 (diario) | `(distrito, turno, dia)` | 88,752 | 42 |
 
 ---
 
@@ -22,7 +21,7 @@ Dos versiones implementadas:
 
 Evaluados en el holdout final con prediccion **multi-step recursiva** (simula el escenario real donde no se tienen los valores futuros).
 
-### v1 Semanal (12 semanas, 12,728 filas)
+### Semanal (12 semanas, 12,728 filas)
 
 | Modelo | RMSE holdout | RMSE CV (5-fold) | RMSE CV std |
 |---|---|---|---|
@@ -35,29 +34,6 @@ Evaluados en el holdout final con prediccion **multi-step recursiva** (simula el
 **Ganador por métrica**:
 - Holdout: **XGBoost** (menor RMSE absoluto)
 - CV: **Poisson lineal** (más estable, mejor generalización)
-
-> Ver `HALLAZGOS_TUNING_BAYESIANO.md` para el analisis completo de resultados y hallazgos del tuning de hiperparametros.
-
-### v2 Diario (3 meses, 88,752 filas)
-
-| Modelo | RMSE recursivo (3 meses) | RMSE CV (5-fold) |
-|---|---|---|
-| **LightGBM Poisson** | **1.70** | - |
-| XGBoost Poisson | 2.03 | - |
-| Poisson lineal | 1.66 | - |
-| Baseline media global | 2.20 | - |
-
-**Ganador**: LightGBM con margen (1.70 vs 2.03 de XGBoost). 
-
-> Ver `CHANGELOG.md` para la historia completa de las metricas (incluyendo el bug de fuga de target que fue corregido).
-
-### Top 3 zonas calientes (v1, 12 semanas, recursivo)
-
-| Celda | Real | LightGBM | Error % |
-|---|---|---|---|
-| LIMA/madrugada | 446 | 515 | +15% |
-| LIMA/noche | 615 | 508 | -17% |
-| SAN JUAN DE LURIGANCHO/madrugada | 446 | 462 | +3% |
 
 ---
 
@@ -87,9 +63,6 @@ Modelado/08_final_refit_*   →  reentrenamiento final + evaluacion en holdout
 - Rolling stats (mean y std con ventanas 3-30) — sobre los lags, no el target
 - Media historica estacional (mismo distrito+turno+semana_del_anio, con `shift(1)`)
 - OHE de turno + LabelEncoder de distrito
-
-Ver `CHANGELOG.md` para detalles tecnicos y `Modelado/06_heatmap_ranking.ipynb` para visualizaciones finales.
-
 ---
 
 ## Estructura del repositorio
@@ -106,54 +79,20 @@ TA_IA_Aplicada/
 │
 ├── Data/                                 # artefactos intermedios
 │
-├── Modelado/                             # version 1 (semanal)
-│   ├── 01_agregacion_semanal.ipynb
-│   ├── 02_feature_engineering.ipynb
-│   ├── 03_baseline_poisson.ipynb
-│   ├── 04_xgb_lgbm.ipynb
-│   ├── 05_validacion_ts.ipynb
-│   ├── 06_heatmap_ranking.ipynb
-│   ├── 07_optuna_tuning.ipynb            # tuning bayesiano con burn-in CV
-│   ├── 08_final_refit_eval.ipynb          # reentrenamiento + evaluacion final
-│   ├── forecast_utils.py                  # funciones compartidas (forecast vectorizado, metrics)
-│   ├── figures/                           # graficos generados
-│   └── optuna/                           # resultados del tuning (params, models, plots)
-│
-└── Modelado 2.0/                         # version 2 (diario)
-    ├── 01_agregacion_diaria.ipynb
-    ├── 02_features_diario.ipynb
-    ├── 03_baseline_poisson_diario.ipynb
-    ├── 04_xgb_lgbm_diario.ipynb
-    ├── 05_validacion_diario.ipynb
-    └── 06_heatmap_diario.ipynb
+├── Modelado/                             
+    ├── 01_agregacion_semanal.ipynb
+    ├── 02_feature_engineering.ipynb
+    ├── 03_baseline_poisson.ipynb
+    ├── 04_xgb_lgbm.ipynb
+    ├── 05_validacion_ts.ipynb
+    ├── 06_heatmap_ranking.ipynb
+    ├── 07_optuna_tuning.ipynb            # tuning bayesiano con burn-in CV
+    ├── 08_final_refit_eval.ipynb          # reentrenamiento + evaluacion final
+    ├── forecast_utils.py                  # funciones compartidas (forecast vectorizado, metrics)
+    ├── figures/                           # graficos generados
+    └── optuna/                           # resultados del tuning (params, models, plots)
+
 ```
-
----
-
-## Como ejecutar
-
-```bash
-# 1. Limpieza y EDA (requieren dataset original salida.csv en Drive)
-jupyter execute LimpiarDataGrande.ipynb
-jupyter execute EDA_Data_Lima.ipynb
-
-# 2. Version 1 (semanal)
-jupyter execute Modelado/01_agregacion_semanal.ipynb
-jupyter execute Modelado/02_feature_engineering.ipynb
-jupyter execute Modelado/03_baseline_poisson.ipynb
-jupyter execute Modelado/04_xgb_lgbm.ipynb
-jupyter execute Modelado/05_validacion_ts.ipynb
-jupyter execute Modelado/06_heatmap_ranking.ipynb
-
-# 3. Tuning bayesiano (opcional, requiere pip install optuna)
-jupyter execute Modelado/07_optuna_tuning.ipynb
-jupyter execute Modelado/08_final_refit_eval.ipynb
-
-# 4. Version 2 (diario), misma estructura
-jupyter execute "Modelado 2.0/01_agregacion_diaria.ipynb"
-# ... etc
-```
-
 ---
 
 ## Stack
@@ -164,9 +103,3 @@ jupyter execute "Modelado 2.0/01_agregacion_diaria.ipynb"
 - optuna (tuning bayesiano, opcional)
 
 ---
-
-## Equipo
-
-- (Compañero 1) — Limpieza (`LimpiarDataGrande.ipynb`)
-- (Compañero 2) — EDA (`EDA_Data_Lima.ipynb`)
-- (Tú) — Modelado, documentacion, validacion (`Modelado/`, `Modelado 2.0/`, `CHANGELOG.md`, `README.md`)
